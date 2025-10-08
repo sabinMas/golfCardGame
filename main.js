@@ -1,52 +1,73 @@
-// ===== Variables =====
-let score = 0;                         // single variable for score
-let roundScores = [0, 0, 0, 0, 0];     // array for rounds
-
-// ===== DOM Elements =====
-const scoreDisplay = document.getElementById("scoreDisplay");
-const scoreArrayDisplay = document.getElementById("scoreArrayDisplay");
-
+// ====== Player Name Display (yours, kept) ======
 const p1Input = document.getElementById("player1Name");
 const p2Input = document.getElementById("player2Name");
 const p1Display = document.getElementById("p1Display");
 const p2Display = document.getElementById("p2Display");
 
-// ===== Event Listeners =====
 document.getElementById("startGameBtn").addEventListener("click", displayPlayers);
-document.getElementById("increaseScoreBtn").addEventListener("click", increaseScore);
-document.getElementById("updateArrayBtn").addEventListener("click", updateArray);
 
-// ===== Functions =====
 function displayPlayers() {
-  const name1 = p1Input.value || "Player 1";
+  const name1 = p1Input.value || "Player 1"; 
   const name2 = p2Input.value || "Player 2";
 
-  // under the setup box
   p1Display.textContent = `Player 1: ${name1}`;
   p2Display.textContent = `Player 2: ${name2}`;
 
-  // above each player’s 6 cards
   const h1 = document.getElementById("player1Header");
   const h2 = document.getElementById("player2Header");
-  if (h1) h1.textContent = name1;
-  if (h2) h2.textContent = name2;
+  h1 && (h1.textContent = name1); 
+  h2 && (h2.textContent = name2);
 
-  // score table headers
   const c1 = document.getElementById("player1HeaderCell");
   const c2 = document.getElementById("player2HeaderCell");
-  if (c1) c1.textContent = name1;
-  if (c2) c2.textContent = name2;
+  c1 && (c1.textContent = name1);
+  c2 && (c2.textContent = name2);
 }
 
+// ====== Scoring Helpers ======
+const toNum = (val) => {
+  const n = Number(val);
+  return (!val || Number.isNaN(n)) ? 0 : n;
+};
 
+// ====== Calculate totals ======
+//https://www.w3schools.com/jsref/met_document_queryselectorall.asp
+function calcTotalForPlayer(playerNum) {
+  let total = 0;
 
-function increaseScore() {
-  score++;
-  scoreDisplay.innerHTML = score; // DOM update
+  if (playerNum == 1 || playerNum == "1") {
+    const inputs = document.querySelectorAll('.score-input.p1');
+    inputs.forEach(inp => { total += (toNum(inp.value) || 0); });
+
+    const totalField = document.querySelector('.total-input.p1');
+    if (totalField) totalField.value = total;
+  }
+  else if (playerNum == 2 || playerNum =="2") {
+    const inputs = document.querySelectorAll('.score-input.p2');
+    inputs.forEach(inp => { total += (toNum(inp.value) || 0); });
+
+    const totalField = document.querySelector('.total-input.p2');
+    if (totalField) totalField.value = total;
+  }
 }
 
-function updateArray() {
-  // Change a value in the array and update display
-  roundScores[0] = Math.floor(Math.random() * 10); // random round 1 score
-  scoreArrayDisplay.innerHTML = `[${roundScores.join(", ")}]`;
+// Recalculate both
+function recalcAll() {
+  calcTotalForPlayer(1);
+  calcTotalForPlayer(2);
 }
+
+// Recalculate when any score box changes
+//https://www.w3schools.com/js/js_htmldom_eventlistener.asp 
+document.addEventListener("input", (e) => {
+  if (!e.target.classList.contains("score-input")) return;
+
+  const player = e.target.dataset.player;
+  if (player === "1" || player === "2") {
+    calcTotalForPlayer(player);
+  } else {
+    // Fallback if a data-player is missing
+    recalcAll();
+  }
+});
+
