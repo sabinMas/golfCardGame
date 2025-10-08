@@ -47,7 +47,8 @@ h1 { text-align: center; }
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  border: 2px solid #cfcfcf;   /* << clear border */
+  border: 2px solid #cfcfcf;
+  border-color:#000000;   /* << clear border */
   font-size: 1.2em;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   user-select: none;
@@ -60,3 +61,114 @@ h1 { text-align: center; }
   cursor: pointer;
   transition: transform .15s ease, box-shadow .15s ease;
 }
+/* Piles */
+.pile { display: flex; flex-direction: column; align-items: center; }
+.label { font-size: .95rem; opacity: .9; margin-bottom: 8px; }
+.stack { position: relative; width: 70px; height: 100px; } /* match .card size */
+
+/* Facedown "back" (blue pattern) */
+.card.back {
+  border-color: #000000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+/* Face-up (shows value like 7♣ or ?) */
+.card.face {
+  background: #fff;
+  color: #222;
+  border-color: #000000;
+  font-weight: 600;
+}
+
+
+/* Top area: draw/discard piles */
+.table-top {
+  display: flex;
+  flex-direction: row;      /* <-- makes them side by side */
+  justify-content: center;  /* <-- centers horizontally */
+  align-items: center;      /* <-- aligns them vertically */
+  gap: 60px;                /* <-- space between the two piles */
+  margin: 20px 0;           /* spacing around the section */
+}
+
+/* Form and Score sections */
+.setup, .score-section {
+  background: #388e3c;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 20px auto;
+  width: 420px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.setup input {
+  margin: 6px;
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+}
+
+button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #1b5e20;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2e7d32;
+}
+.score-grid-wrapper {
+  overflow-x: auto;
+}
+
+.score-table {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background: #2f6f33;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.score-section {
+  background: #388e3c;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 40px auto 20px;
+  width: 95%;
+  max-width: 1200px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.score-grid-wrapper {
+  overflow-x: visible; /* turn off horizontal scroll */
+}
+
+.score-table {
+  width: 100%;
+  table-layout: fixed; /* evenly distribute columns */
+  border-collapse: collapse;
+  background: #2f6f33;
+  border-radius: 10px;
+}
+
+
+
+.total {
+  font-weight: 700;
+  background: rgba(255,255,255,0.08);
+}
+
+.score-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+

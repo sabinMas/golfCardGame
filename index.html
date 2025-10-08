@@ -4,13 +4,53 @@
   <meta charset="UTF-8" />
   <title>Golf Card Game</title>
   <link rel="stylesheet" href="styles.css" />
+<script defer src="main.js"></script>
 </head>
 <body>
-  <h1>Golf Card Game</h1>
+  <h1>Golf</h1>
+      <!-- Player setup form -->
+  <section class="setup">
+    <h2>Player Setup</h2>
+    <form id="playerForm">
+      <label>Player 1 Name:
+        <input type="text" id="player1Name" required>
+      </label>
+      <label>Player 2 Name:
+        <input type="text" id="player2Name" required>
+      </label>
+      <button type="button" id="startGameBtn">Start Game</button>
+    </form>
+
+    <div id="playerDisplay">
+      <p id="p1Display">Player 1: </p>
+      <p id="p2Display">Player 2: </p>
+    </div>
+  </section>
+  <!-- Top of table: draw & discard piles -->
+  <section class="table-top" aria-label="Draw and Discard Piles">
+    <div class="pile">
+      <div class="label">Draw</div>
+      <div class="stack" id="draw-pile">
+        <div class="card back" aria-hidden="true">?</div>
+      </div>
+    </div>
+
+    <div class="pile">
+      <div class="label">Discard</div>
+      <div class="stack" id="discard-pile">
+        <!-- Placeholder face-up card; swap text when you implement logic -->
+        <div class="card face" aria-label="Top of discard">9</div>
+      </div>
+    </div>
+  </section>
+
+
+ 
+
 
   <div class="players">
     <div class="player">
-      <h2>Player 1</h2>
+      <h2 id="player1Header">Player 1</h2>
       <div class="cards">
         <div class="card">?</div>
         <div class="card">?</div>
@@ -22,7 +62,7 @@
     </div>
 
     <div class="player">
-      <h2>Player 2</h2>
+      <h2 id="player2Header">Player 2</h2>
       <div class="cards">
         <div class="card">?</div>
         <div class="card">?</div>
@@ -33,5 +73,58 @@
       </div>
     </div>
   </div>
+
+ <!-- Score & Array Section -->
+  <!-- Score Tracker (2 players × 10 columns: 9 rounds + Total) -->
+<section class="score-section" id="score-section">
+  <h2>Score Tracker</h2>
+
+  <div class="score-grid-wrapper">
+    <table class="score-table" aria-label="Score tracker table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>R5</th>
+          <th>R6</th><th>R7</th><th>R8</th><th>R9</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="row-p1">
+          <th id="player1HeaderCell">Player 1</th>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="1" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="2" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="3" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="4" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="5" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="6" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="7" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="8" min="0"></td>
+          <td><input type="number" class="score-input p1" data-player="1" data-round="9" min="0"></td>
+          <td><input type="number" class="total-input p1" data-player="1" data-round=></td>
+        </tr>
+
+        <tr id="row-p2">
+          <th id="player2HeaderCell">Player 2</th>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="1" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="2" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="3" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="4" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="5" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="6" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="7" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="8" min="0"></td>
+          <td><input type="number" class="score-input p2" data-player="2" data-round="9" min="0"></td>
+          <td><input type="number" class="total-input p2" data-player="2" data-round=></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="score-actions">
+    <button type="button" id="clearScoresBtn">Clear Scores</button>
+  </div>
+</section>
+
 </body>
 </html>
