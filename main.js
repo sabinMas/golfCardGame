@@ -60,21 +60,26 @@ const ROUNDS_MAX = 9;
 
 const state = {
   round: 1,
-  currentPlayer: 1,         // whose turn right now (1 or 2)
-  startingPlayer: 1,        // alternates each round
-  phase: "setupFlips",      // "setupFlips" | "turns" | "ended"
-  flipsRemaining: { 1: 2, 2: 2 }, // opening two flips per player (must be different rows)
-  openingRowsFlipped: { 1: new Set(), 2: new Set() }, // track rows used in opening flips
-  deck: [],                 // face-down draw pile (array end is TOP)
-  discard: [],              // face-up discard pile (array end is TOP)
+  currentPlayer: 1,         
+  startingPlayer: 1,       
+  phase: "setupFlips",     
+  flipsRemaining: { 1: 2, 2: 2 }, 
+  openingRowsFlipped: { 1: new Set(), 2: new Set() }, 
+  deck: [],                 
+  discard: [],              
   hands: {
-    1: new Array(6).fill(null), // each is a card object {rank,suit,label,value,faceUp,cleared}
+    1: new Array(6).fill(null), 
     2: new Array(6).fill(null),
   },
-  drawnCard: null,          // temp card in hand after drawing (must replace or discard)
+  drawnCard: null,        
 };
 
-// Card helpers
+
+
+
+
+
+// Card identifiers 
 const SUITS = ["♣","♦","♥","♠"];
 const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
@@ -106,6 +111,10 @@ function makeDeck(includeJokers=true) {
   }
   return deck;
 }
+
+
+
+
 
 function shuffle(a) {
   for (let i=a.length-1; i>0; i--) {
@@ -168,6 +177,7 @@ function renderAll() {
   renderHands();
 }
 
+
 /******** ROUND / TURN FLOW ********/
 function startGame() {
   displayPlayers();
@@ -184,6 +194,7 @@ function startRound(roundNum) {
   state.drawnCard = null;
 
   state.deck = shuffle(makeDeck(INCLUDE_JOKERS));
+  
   state.discard = [];
   dealHands();
 
@@ -280,7 +291,7 @@ function reshuffleFromDiscardIntoDeck() {
   state.discard = [top];
 }
 
-/* Replace a personal card with drawnCard */
+/* Replace a personal card with drawn card*/
 function tryReplace(pn, slotIdx) {
   if (state.phase !== "turns") return;
   if (state.currentPlayer !== pn) return;
