@@ -1,5 +1,5 @@
 /***********************
- * NAME DISPLAY (yours)
+ * Name Displays
  ***********************/
 const p1Input = document.getElementById("player1Name");
 const p2Input = document.getElementById("player2Name");
@@ -25,41 +25,79 @@ function displayPlayers() {
   c2 && (c2.textContent = name2);
 }
 
+
+
 /***********************
- * SCORE HELPERS (yours)
+ * Score calculation
  ***********************/
 const toNum = (val) => {
   const n = Number(val);
-  return (!val || Number.isNaN(n)) ? 0 : n;
+  return !val || Number.isNaN(n) ? 0 : n;
 };
 
 function calcTotalForPlayer(playerNum) {
   let total = 0;
   if (playerNum == 1) {
-    document.querySelectorAll('.score-input.p1').forEach(inp => total += (toNum(inp.value) || 0));
-    const totalField = document.querySelector('.total-input.p1');
+    document
+      .querySelectorAll(".score-input.p1")
+      .forEach((inp) => (total += toNum(inp.value) || 0));
+    const totalField = document.querySelector(".total-input.p1");
     if (totalField) totalField.value = total;
   } else if (playerNum == 2) {
-    document.querySelectorAll('.score-input.p2').forEach(inp => total += (toNum(inp.value) || 0));
-    const totalField = document.querySelector('.total-input.p2');
+    document
+      .querySelectorAll(".score-input.p2")
+      .forEach((inp) => (total += toNum(inp.value) || 0));
+    const totalField = document.querySelector(".total-input.p2");
     if (totalField) totalField.value = total;
   }
 }
-function recalcAll() { calcTotalForPlayer(1); calcTotalForPlayer(2); }
+function recalcAll() {
+  calcTotalForPlayer(1);
+  calcTotalForPlayer(2);
+}
 document.addEventListener("input", (e) => {
   if (!e.target.classList.contains("score-input")) return;
   const player = e.target.dataset.player;
-  (player === "1" || player === "2") ? calcTotalForPlayer(player) : recalcAll();
+  player === "1" || player === "2" ? calcTotalForPlayer(player) : recalcAll();
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /************************************
- * GOLF GAME ENGINE (new)
+ * Game logic
  ************************************/
-const INCLUDE_JOKERS = true; // set to false to make the deck exactly 52
+const INCLUDE_JOKERS = true;
 const ROUNDS_MAX = 9;
 
 const state = {
   round: 1,
+<<<<<<< Updated upstream
   currentPlayer: 1,         
   startingPlayer: 1,       
   phase: "setupFlips",     
@@ -67,10 +105,20 @@ const state = {
   openingRowsFlipped: { 1: new Set(), 2: new Set() }, 
   deck: [],                 
   discard: [],              
+=======
+  currentPlayer: 1,
+  startingPlayer: 1,
+  phase: "setupFlips",
+  flipsRemaining: { 1: 2, 2: 2 }, // opening two flips per player (must be different rows)
+  openingRowsFlipped: { 1: new Set(), 2: new Set() }, // track rows used in opening flips
+  deck: [],
+  discard: [],
+>>>>>>> Stashed changes
   hands: {
     1: new Array(6).fill(null), 
     2: new Array(6).fill(null),
   },
+<<<<<<< Updated upstream
   drawnCard: null,        
 };
 
@@ -82,6 +130,28 @@ const state = {
 // Card identifiers 
 const SUITS = ["♣","♦","♥","♠"];
 const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+=======
+  drawnCard: null, // temp card in hand after drawing (must replace or discard)
+};
+
+
+const SUITS = ["♣", "♦", "♥", "♠"];
+const RANKS = [
+  "A",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "J",
+  "Q",
+  "K",
+];
+>>>>>>> Stashed changes
 
 function cardValue(rank) {
   if (rank === "J" || rank === "Q") return 10;
@@ -91,7 +161,7 @@ function cardValue(rank) {
   return Number(rank); // 2-10
 }
 
-function makeDeck(includeJokers=true) {
+function makeDeck(includeJokers = true) {
   const deck = [];
   for (const s of SUITS) {
     for (const r of RANKS) {
@@ -101,13 +171,27 @@ function makeDeck(includeJokers=true) {
         label: `${r}${s}`,
         value: cardValue(r),
         faceUp: false,
-        cleared: false
+        cleared: false,
       });
     }
   }
   if (includeJokers) {
-    deck.push({ rank:"JOKER", suit:"", label:"Joker", value:-2, faceUp:true, cleared:false });
-    deck.push({ rank:"JOKER", suit:"", label:"Joker", value:-2, faceUp:true, cleared:false });
+    deck.push({
+      rank: "JOKER",
+      suit: "",
+      label: "Joker",
+      value: -2,
+      faceUp: true,
+      cleared: false,
+    });
+    deck.push({
+      rank: "JOKER",
+      suit: "",
+      label: "Joker",
+      value: -2,
+      faceUp: true,
+      cleared: false,
+    });
   }
   return deck;
 }
@@ -117,8 +201,8 @@ function makeDeck(includeJokers=true) {
 
 
 function shuffle(a) {
-  for (let i=a.length-1; i>0; i--) {
-    const j = Math.floor(Math.random()*(i+1));
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
@@ -126,36 +210,42 @@ function shuffle(a) {
 
 function dealHands() {
   // 6 cards each
-  for (let i=0;i<6;i++) {
-    state.hands[1][i] = { ...state.deck.pop(), faceUp:false, cleared:false };
-    state.hands[2][i] = { ...state.deck.pop(), faceUp:false, cleared:false };
+  for (let i = 0; i < 6; i++) {
+    state.hands[1][i] = { ...state.deck.pop(), faceUp: false, cleared: false };
+    state.hands[2][i] = { ...state.deck.pop(), faceUp: false, cleared: false };
   }
 }
 
 /******** UI RENDER ********/
 function renderPiles() {
   const drawTop = document.querySelector("#draw-pile .card");
-  if (drawTop) { drawTop.textContent = "?"; drawTop.classList.add("back"); drawTop.setAttribute("aria-hidden","true"); }
+  if (drawTop) {
+    drawTop.textContent = "?";
+    drawTop.classList.add("back");
+    drawTop.setAttribute("aria-hidden", "true");
+  }
 
   const discardStack = document.querySelector("#discard-pile");
   discardStack.innerHTML = "";
-  const top = state.discard[state.discard.length-1];
+  const top = state.discard[state.discard.length - 1];
   const face = document.createElement("div");
   face.className = "card face";
   face.textContent = top ? top.label : "—";
   discardStack.appendChild(face);
 }
 
-function slotRow(slotIndex) { return Math.floor(slotIndex/2); } // rows: 0,1,2
+function slotRow(slotIndex) {
+  return Math.floor(slotIndex / 2);
+} // rows: 0,1,2
 
 function renderHands() {
-  document.querySelectorAll('.card[data-player][data-slot]').forEach(el => {
+  document.querySelectorAll(".card[data-player][data-slot]").forEach((el) => {
     const p = Number(el.dataset.player);
     const idx = Number(el.dataset.slot);
     const card = state.hands[p][idx];
 
     if (!card || card.cleared) {
-      el.textContent = ""; 
+      el.textContent = "";
       el.className = "card";
       el.style.visibility = card && card.cleared ? "hidden" : "visible";
       return;
@@ -177,8 +267,12 @@ function renderAll() {
   renderHands();
 }
 
+<<<<<<< Updated upstream
 
 /******** ROUND / TURN FLOW ********/
+=======
+/* game flow */
+>>>>>>> Stashed changes
 function startGame() {
   displayPlayers();
   startRound(1);
@@ -186,7 +280,7 @@ function startGame() {
 
 function startRound(roundNum) {
   state.round = roundNum;
-  state.startingPlayer = (roundNum % 2 === 1) ? 1 : 2; // odd=P1, even=P2
+  state.startingPlayer = roundNum % 2 === 1 ? 1 : 2; // odd=P1, even=P2
   state.currentPlayer = state.startingPlayer;
   state.phase = "setupFlips";
   state.flipsRemaining = { 1: 2, 2: 2 };
@@ -203,14 +297,20 @@ function startRound(roundNum) {
 
   attachUIHandlersOnce();
   renderAll();
-  showStatus(`${getPlayerName(state.currentPlayer)}: flip one card (different rows for your two opening flips).`);
+  showStatus(
+    `${getPlayerName(
+      state.currentPlayer
+    )}: flip one card (different rows for your two opening flips).`
+  );
 }
 
 function getPlayerName(pn) {
-  return (pn === 1 ? (p1Input.value || "Player 1") : (p2Input.value || "Player 2"));
+  return pn === 1 ? p1Input.value || "Player 1" : p2Input.value || "Player 2";
 }
 
-function nextPlayer() { state.currentPlayer = (state.currentPlayer === 1 ? 2 : 1); }
+function nextPlayer() {
+  state.currentPlayer = state.currentPlayer === 1 ? 2 : 1;
+}
 
 /******** Opening flips (must be different rows) ********/
 function canFlipDuringSetup(pn, slotIdx) {
@@ -246,9 +346,15 @@ function handleSetupFlip(pn, slotIdx) {
   if (state.flipsRemaining[1] === 0 && state.flipsRemaining[2] === 0) {
     state.phase = "turns";
     state.currentPlayer = state.startingPlayer;
-    showStatus(`${getPlayerName(state.currentPlayer)}'s turn: choose to Flip, Draw→Replace, or Draw→Discard.`);
+    showStatus(
+      `${getPlayerName(
+        state.currentPlayer
+      )}'s turn: choose to Flip, Draw→Replace, or Draw→Discard.`
+    );
   } else {
-    showStatus(`${getPlayerName(state.currentPlayer)}: flip one card (setup phase).`);
+    showStatus(
+      `${getPlayerName(state.currentPlayer)}: flip one card (setup phase).`
+    );
   }
 }
 
@@ -280,7 +386,11 @@ function draw(source) {
     state.drawnCard = state.discard.pop() || null;
   }
   renderPiles();
-  showStatus(`${getPlayerName(state.currentPlayer)}: click one of your cards to REPLACE it, or click Discard pile to discard the drawn card.`);
+  showStatus(
+    `${getPlayerName(
+      state.currentPlayer
+    )}: click one of your cards to REPLACE it, or click Discard pile to discard the drawn card.`
+  );
 }
 
 function reshuffleFromDiscardIntoDeck() {
@@ -324,7 +434,8 @@ function discardDrawn() {
 function tryRowClear(pn, slotIdxJustChanged) {
   // Evaluate the row containing the changed slot
   const row = slotRow(slotIdxJustChanged);
-  const a = row*2, b = row*2 + 1;
+  const a = row * 2,
+    b = row * 2 + 1;
   const c1 = state.hands[pn][a];
   const c2 = state.hands[pn][b];
 
@@ -335,7 +446,8 @@ function tryRowClear(pn, slotIdxJustChanged) {
   if (!(c1.faceUp && c2.faceUp)) return;
 
   // Clear if ranks match OR either is Joker (wild)
-  const matches = (c1.rank === c2.rank) || (c1.rank === "JOKER") || (c2.rank === "JOKER");
+  const matches =
+    c1.rank === c2.rank || c1.rank === "JOKER" || c2.rank === "JOKER";
   if (matches) {
     c1.cleared = true;
     c2.cleared = true;
@@ -354,17 +466,23 @@ function endTurn() {
   }
 
   nextPlayer();
-  showStatus(`${getPlayerName(state.currentPlayer)}'s turn: choose to Flip, Draw→Replace, or Draw→Discard.`);
+  showStatus(
+    `${getPlayerName(
+      state.currentPlayer
+    )}'s turn: choose to Flip, Draw→Replace, or Draw→Discard.`
+  );
 }
 
 function playerClearedAllRows(pn) {
   // three rows: (0,1), (2,3), (4,5)
   const h = state.hands[pn];
-  return [0,2,4].every(rStart => h[rStart]?.cleared && h[rStart+1]?.cleared);
+  return [0, 2, 4].every(
+    (rStart) => h[rStart]?.cleared && h[rStart + 1]?.cleared
+  );
 }
 
 function playerAllFaceUp(pn) {
-  return state.hands[pn].every(c => c && (c.faceUp || c.cleared));
+  return state.hands[pn].every((c) => c && (c.faceUp || c.cleared));
 }
 
 function handScore(pn) {
@@ -387,22 +505,33 @@ function finishRound() {
   calcTotalForPlayer(2);
 
   renderAll();
-  showStatus(`Round ${state.round} over. ${getPlayerName(1)}: +${p1Score}, ${getPlayerName(2)}: +${p2Score}.`);
+  showStatus(
+    `Round ${state.round} over. ${getPlayerName(
+      1
+    )}: +${p1Score}, ${getPlayerName(2)}: +${p2Score}.`
+  );
 
   // Next round or game over
   if (state.round < ROUNDS_MAX) {
     // brief delay so players can see results
     setTimeout(() => startRound(state.round + 1), 750);
   } else {
-    const t1 = toNum(document.querySelector('.total-input.p1')?.value);
-    const t2 = toNum(document.querySelector('.total-input.p2')?.value);
-    const loser = (t1 > t2) ? getPlayerName(1) : (t2 > t1 ? getPlayerName(2) : "Tie");
-    showStatus(`Game over. Highest points lose. ${loser === "Tie" ? "It's a tie!" : `${loser} loses.`}`);
+    const t1 = toNum(document.querySelector(".total-input.p1")?.value);
+    const t2 = toNum(document.querySelector(".total-input.p2")?.value);
+    const loser =
+      t1 > t2 ? getPlayerName(1) : t2 > t1 ? getPlayerName(2) : "Tie";
+    showStatus(
+      `Game over. Highest points lose. ${
+        loser === "Tie" ? "It's a tie!" : `${loser} loses.`
+      }`
+    );
   }
 }
 
 function writeRoundScore(playerNum, roundNum, amount) {
-  const sel = `.score-input.${playerNum===1 ? "p1":"p2"}[data-round="${roundNum}"]`;
+  const sel = `.score-input.${
+    playerNum === 1 ? "p1" : "p2"
+  }[data-round="${roundNum}"]`;
   const cell = document.querySelector(sel);
   if (cell) cell.value = amount;
 }
@@ -414,8 +543,8 @@ function attachUIHandlersOnce() {
   if (handlersAttached) return;
 
   // Click on card slots (both players)
-  document.querySelectorAll('.card[data-player][data-slot]').forEach(el => {
-    el.addEventListener('click', () => {
+  document.querySelectorAll(".card[data-player][data-slot]").forEach((el) => {
+    el.addEventListener("click", () => {
       const pn = Number(el.dataset.player);
       const slot = Number(el.dataset.slot);
 
@@ -440,7 +569,7 @@ function attachUIHandlersOnce() {
 
   // Click draw pile (stock)
   const drawPile = document.getElementById("draw-pile");
-  drawPile?.addEventListener('click', () => {
+  drawPile?.addEventListener("click", () => {
     if (state.phase !== "turns") return;
     if (state.drawnCard) return; // already holding
     draw("stock");
@@ -448,7 +577,7 @@ function attachUIHandlersOnce() {
 
   // Click discard pile:
   const discardPile = document.getElementById("discard-pile");
-  discardPile?.addEventListener('click', () => {
+  discardPile?.addEventListener("click", () => {
     if (state.phase !== "turns") return;
     // If holding a drawn card, this click **discards** it
     if (state.drawnCard) {
@@ -467,9 +596,8 @@ function showStatus(msg) {
   document.title = `Golf – ${msg}`;
 }
 
-
 // Recalculate when any score box changes
-//https://www.w3schools.com/js/js_htmldom_eventlistener.asp 
+//https://www.w3schools.com/js/js_htmldom_eventlistener.asp
 document.addEventListener("input", (e) => {
   if (!e.target.classList.contains("score-input")) return;
 
@@ -481,4 +609,3 @@ document.addEventListener("input", (e) => {
     recalcAll();
   }
 });
-
