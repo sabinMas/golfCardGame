@@ -3,36 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <title>Golf Card Game</title>
+    <!-- Link our stylesheet and script for the game.  The stylesheet contains
+         high‑contrast colors for accessibility and uses a custom card back graphic. -->
     <link rel="stylesheet" href="styles.css" />
     <script defer src="main.js"></script>
   </head>
   <body>
     <h1>Golf</h1>
+
     <!-- Player setup form -->
     <section class="setup">
       <h2>Player Setup</h2>
       <form id="playerForm">
-        <label
-          >Player 1 Name:
-          <input type="text" id="player1Name" required />
+        <label>
+          Player&nbsp;1 Name:
+          <input type="text" id="player1Name" />
         </label>
-        <label
-          >Player 2 Name:
-          <input type="text" id="player2Name" required />
+        <label>
+          Player&nbsp;2 Name:
+          <input type="text" id="player2Name" />
         </label>
         <button type="button" id="startGameBtn">Start Game</button>
       </form>
 
       <div id="playerDisplay">
-        <p id="p1Display">Player 1:</p>
-        <p id="p2Display">Player 2:</p>
+        <p id="p1Display">Player&nbsp;1:</p>
+        <p id="p2Display">Player&nbsp;2:</p>
       </div>
     </section>
-    <!-- Top of table: draw & discard piles -->
+
+    <!-- Top of table: draw and discard piles along with the drawn card area -->
     <section class="table-top" aria-label="Draw and Discard Piles">
       <div class="pile">
         <div class="label">Draw</div>
         <div class="stack" id="draw-pile">
+          <!-- the top of the draw pile is always shown as a facedown card -->
           <div class="card back" aria-hidden="true">?</div>
         </div>
       </div>
@@ -40,16 +45,26 @@
       <div class="pile">
         <div class="label">Discard</div>
         <div class="stack" id="discard-pile">
-          <!-- Placeholder face-up card; swap text when you implement logic -->
-          <div class="card face" aria-label="Top of discard">9</div>
+          <div class="card face" aria-label="Top of discard">—</div>
+        </div>
+      </div>
+
+      <!-- Area to show the card a player has drawn.  When a player draws a card it will
+           appear here so they can drag it onto one of their own cards or back onto
+           the discard pile.  Initially this shows a facedown card until a draw occurs. -->
+      <div class="pile">
+        <div class="label">Drawn&nbsp;Card</div>
+        <div class="stack" id="drawn-card">
+          <div class="card back" aria-hidden="true">?</div>
         </div>
       </div>
     </section>
 
+    <!-- Player hands -->
     <div class="players">
       <!-- Player 1 -->
       <div class="player">
-        <h2 id="player1Header">Player 1</h2>
+        <h2 id="player1Header">Player&nbsp;1</h2>
         <div class="cards">
           <div class="card" data-player="1" data-slot="0">?</div>
           <div class="card" data-player="1" data-slot="1">?</div>
@@ -61,7 +76,7 @@
       </div>
       <!-- Player 2 -->
       <div class="player">
-        <h2 id="player2Header">Player 2</h2>
+        <h2 id="player2Header">Player&nbsp;2</h2>
         <div class="cards">
           <div class="card" data-player="2" data-slot="0">?</div>
           <div class="card" data-player="2" data-slot="1">?</div>
@@ -73,11 +88,35 @@
       </div>
     </div>
 
-    <!-- Score & Array Section -->
-    <!-- Score Tracker (2 players × 10 columns: 9 rounds + Total) -->
+    <!-- Rules / instructions for each turn.  These rules describe what a player can do
+         on their turn.  Placing this section below the player areas provides an open
+         space for the instructions and uses clear text with high contrast for
+         accessibility.  For guidelines on choosing high‑contrast colors see the
+         accessibility best practices which note that light text should be used on
+         dark backgrounds for maximum contrast【867766088601074†L147-L152】. -->
+    <section class="rules">
+      <h2>How to Play Each Turn</h2>
+      <ol>
+        <li>
+          Draw the top card from the draw pile. You may then replace any one of
+          your cards in front of you with the card you drew.
+        </li>
+        <li>
+          Instead of drawing from the draw pile you may draw the top card from
+          the discard pile. You may replace one of your cards with it or, if you
+          decide against using it, return it to the discard pile before
+          replacing any cards.
+        </li>
+        <li>
+          Rather than drawing, you may flip over one of your own face‑down cards
+          that has not yet been revealed.
+        </li>
+      </ol>
+    </section>
+
+    <!-- Score tracker (2 players × 10 columns: 9 rounds + Total) -->
     <section class="score-section" id="score-section">
       <h2>Score Tracker</h2>
-
       <div class="score-grid-wrapper">
         <table class="score-table" aria-label="Score tracker table">
           <thead>
@@ -97,7 +136,7 @@
           </thead>
           <tbody>
             <tr id="row-p1">
-              <th id="player1HeaderCell">Player 1</th>
+              <th id="player1HeaderCell">Player&nbsp;1</th>
               <td>
                 <input
                   type="number"
@@ -180,13 +219,11 @@
                 />
               </td>
               <td>
-                <input type="number" class="total-input p1" data-player="1"
-                data-round=>
+                <input type="number" class="total-input p1" data-player="1" />
               </td>
             </tr>
-
             <tr id="row-p2">
-              <th id="player2HeaderCell">Player 2</th>
+              <th id="player2HeaderCell">Player&nbsp;2</th>
               <td>
                 <input
                   type="number"
@@ -269,17 +306,16 @@
                 />
               </td>
               <td>
-                <input type="number" class="total-input p2" data-player="2"
-                data-round=>
+                <input type="number" class="total-input p2" data-player="2" />
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
       <div class="score-actions">
         <button type="button" id="clearScoresBtn">Clear Scores</button>
       </div>
     </section>
   </body>
 </html>
+<!DOCTYPE html>

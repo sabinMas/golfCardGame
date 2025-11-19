@@ -1,15 +1,25 @@
-/* Page */
+/*
+ * Styles for the Golf card game.  This sheet uses high‑contrast color
+ * combinations to improve accessibility.  The accessibility guidelines
+ * recommend choosing a color scheme that provides strong contrast
+ * between the text and background【867766088601074†L147-L152】 and ensuring
+ * a contrast ratio of at least 4.5:1 for small text【634033898846920†L133-L136】.
+ */
+
+/* Base page styling */
 body {
   font-family: Arial, sans-serif;
-  background: #012e04;
-  color: #fff;
+  background: #013220; /* dark background for high contrast */
+  color: #f5f5f5;      /* light text for contrast on dark backgrounds */
   margin: 0;
   padding: 20px;
 }
+h1 {
+  text-align: center;
+  margin-top: 0;
+}
 
-h1 { text-align: center; }
-
-/* Layout */
+/* Layout for players and piles */
 .players {
   display: flex;
   justify-content: space-around;
@@ -19,15 +29,16 @@ h1 { text-align: center; }
 }
 
 .player {
-  background: #388e3c;
+  background: #165c2a; /* darker green with sufficient contrast */
   padding: 20px;
   border-radius: 10px;
   width: 320px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   text-align: center;
+  color: #f5f5f5; /* ensure player names contrast against panel */
 }
 
-/* 2×3 grid of cards (2 rows, 3 cols) */
+/* Two columns and three rows for the six cards */
 .cards {
   display: grid;
   grid-template-columns: repeat(2, 70px);
@@ -37,70 +48,82 @@ h1 { text-align: center; }
   justify-content: center;
 }
 
-/* Card look */
+/* Card appearance */
 .card {
-  background: #fff;
-  color: #222;
   width: 70px;
   height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  border: 2px solid #cfcfcf;
-  border-color:#000000;   /* << clear border */
+  border: 2px solid #000;
   font-size: 1.2em;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
   user-select: none;
-}
-
-/* Optional: small hover to feel interactive */
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-/* Piles */
-.pile { display: flex; flex-direction: column; align-items: center; }
-.label { font-size: .95rem; opacity: .9; margin-bottom: 8px; }
-.stack { position: relative; width: 70px; height: 100px; } /* match .card size */
-
-/* Facedown "back" (blue pattern) */
-.card.back {
-  border-color: #000000;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-}
-
-/* Face-up (shows value like 7♣ or ?) */
-.card.face {
-  background: #fff;
+  background: #ffffff;
   color: #222;
-  border-color: #000000;
   font-weight: 600;
 }
 
-
-/* Top area: draw/discard piles */
-.table-top {
-  display: flex;
-  flex-direction: row;      /* <-- makes them side by side */
-  justify-content: center;  /* <-- centers horizontally */
-  align-items: center;      /* <-- aligns them vertically */
-  gap: 60px;                /* <-- space between the two piles */
-  margin: 20px 0;           /* spacing around the section */
+/* Hover effect for interactive feel */
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Form and Score sections */
-.setup, .score-section {
-  background: #388e3c;
+/* Draw/discard/drawn card layout */
+.table-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  margin: 20px 0;
+}
+
+.pile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #f5f5f5;
+}
+.label {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+.stack {
+  position: relative;
+  width: 70px;
+  height: 100px;
+}
+
+/* Facedown card uses our custom card back graphic */
+.card.back {
+  background: url('card-back.png') center/cover no-repeat;
+  color: transparent;
+}
+
+/* Face‑up cards reuse the base card style */
+.card.face {
+  background: #ffffff;
+  color: #222;
+}
+
+/* Setup and score panels */
+.setup,
+.score-section {
+  background: #165c2a;
   border-radius: 10px;
   padding: 15px;
   margin: 20px auto;
   width: 420px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  max-width: 95%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  color: #f5f5f5;
 }
-
 .setup input {
   margin: 6px;
   padding: 5px;
@@ -113,61 +136,46 @@ h1 { text-align: center; }
   margin: 6px auto;
 }
 
-
 button {
   margin-top: 10px;
   padding: 6px 12px;
   border-radius: 6px;
   border: none;
   background: #1b5e20;
-  color: #fff;
+  color: #ffffff;
   cursor: pointer;
 }
-
 button:hover {
   background: #2e7d32;
 }
+
 .score-grid-wrapper {
   overflow-x: auto;
 }
 
 .score-table {
   width: 100%;
-  max-width: 980px;
-  margin: 0 auto;
+  table-layout: fixed;
   border-collapse: collapse;
-  background: #2f6f33;
+  background: #165c2a;
   border-radius: 10px;
   overflow: hidden;
+  color: #f5f5f5;
 }
-
-.score-section {
-  background: #388e3c;
-  border-radius: 10px;
-  padding: 20px;
-  margin: 40px auto 20px;
-  width: 95%;
-  max-width: 1200px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+.score-table th,
+.score-table td {
+  padding: 6px;
+  text-align: center;
+  border: 1px solid #013220;
 }
-
-.score-grid-wrapper {
-  overflow-x: visible; /* turn off horizontal scroll */
-}
-
-.score-table {
+.score-table input {
   width: 100%;
-  table-layout: fixed; /* evenly distribute columns */
-  border-collapse: collapse;
-  background: #2f6f33;
-  border-radius: 10px;
-}
-
-
-
-.total {
-  font-weight: 700;
-  background: rgba(255,255,255,0.08);
+  background: #ffffff;
+  color: #222;
+  border: none;
+  border-radius: 4px;
+  padding: 4px;
+  box-sizing: border-box;
 }
 
 .score-actions {
@@ -177,4 +185,24 @@ button:hover {
   margin-top: 12px;
 }
 
-
+/* Rules section styling */
+.rules {
+  background: #165c2a;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto;
+  width: 95%;
+  max-width: 600px;
+  color: #f5f5f5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.rules h2 {
+  margin-top: 0;
+  font-size: 1.3em;
+}
+.rules ol {
+  padding-left: 20px;
+}
+.rules li {
+  margin-bottom: 8px;
+}
