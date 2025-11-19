@@ -101,7 +101,7 @@ const RANKS = [
 ];
 
 /**
- * Convert a card rank to its numeric value for scoring.
+ * Convert card rank to its numeric value for scoring.
  * J/Q are worth 10, K is 0, A is 1, jokers are -2.
  */
 function cardValue(rank) {
@@ -188,9 +188,6 @@ function renderPiles() {
 /**
  * Determine which row a card slot belongs to. Slots are numbered
  * 0–5 and rows are 0–2.
- *
- * @param {number} slotIndex
- * @returns {number}
  */
 function slotRow(slotIndex) {
   return Math.floor(slotIndex / 2);
@@ -393,11 +390,7 @@ function draw(source) {
   );
 }
 
-/**
- * Reshuffle all but the top card of the discard pile back into
- * the deck. Leaves the top card in place. Uses the shuffle
- * function described above.
- */
+
 function reshuffleFromDiscardIntoDeck() {
   if (state.discard.length <= 1) return;
   const top = state.discard.pop();
@@ -405,15 +398,7 @@ function reshuffleFromDiscardIntoDeck() {
   state.discard = [top];
 }
 
-/**
- * Replace a player's card at the given slot with the drawn card.
- * The outgoing card is put onto the discard pile. After
- * replacement we clear the drawn card state, render, attempt
- * to clear the row, and end the turn.
- *
- * @param {number} pn
- * @param {number} slotIdx
- */
+
 function tryReplace(pn, slotIdx) {
   if (state.phase !== "turns") return;
   if (state.currentPlayer !== pn) return;
@@ -430,10 +415,7 @@ function tryReplace(pn, slotIdx) {
   endTurn();
 }
 
-/**
- * Discard the drawn card without replacing. Simply push it
- * onto the discard pile and end the turn.
- */
+
 function discardDrawn() {
   if (state.phase !== "turns") return;
   if (!state.drawnCard) return;
@@ -443,15 +425,7 @@ function discardDrawn() {
   endTurn();
 }
 
-/**
- * Evaluate whether a row should be cleared. A row is cleared
- * if both cards in that row are face up and either their ranks
- * match or one of them is a joker. Cleared cards are removed
- * from play (hidden). After clearing, the hands are re-rendered.
- *
- * @param {number} pn
- * @param {number} slotIdxJustChanged
- */
+
 function tryRowClear(pn, slotIdxJustChanged) {
   const row = slotRow(slotIdxJustChanged);
   const a = row * 2;
@@ -470,12 +444,7 @@ function tryRowClear(pn, slotIdxJustChanged) {
   }
 }
 
-/**
- * End the current player's turn. Checks whether the round is
- * finished (all cards cleared or all face up). Writes scores
- * into the scoreboard and either starts the next round or
- * finishes the game.
- */
+
 function endTurn() {
   const pn = state.currentPlayer;
   if (playerClearedAllRows(pn) || playerAllFaceUp(pn)) {
@@ -488,25 +457,12 @@ function endTurn() {
   );
 }
 
-/**
- * Determine whether a player has cleared all three rows.
- *
- * @param {number} pn
- * @returns {boolean}
- */
+
 function playerClearedAllRows(pn) {
   const h = state.hands[pn];
   return [0, 2, 4].every((rStart) => h[rStart]?.cleared && h[rStart + 1]?.cleared);
 }
 
-/**
- * Determine whether all cards in a player's hand are face up
- * or cleared. Hidden cards still count toward the score if the
- * round ends early.
- *
- * @param {number} pn
- * @returns {boolean}
- */
 function playerAllFaceUp(pn) {
   return state.hands[pn].every((c) => c && (c.faceUp || c.cleared));
 }
@@ -544,13 +500,7 @@ function finishRound() {
   }
 }
 
-/**
- * Write a single round score into the scoreboard for a player.
- *
- * @param {number} playerNum
- * @param {number} roundNum
- * @param {number} amount
- */
+
 function writeRoundScore(playerNum, roundNum, amount) {
   const selector = `.score-input.${playerNum === 1 ? "p1" : "p2"}[data-round="${roundNum}"]`;
   const cell = document.querySelector(selector);
@@ -637,5 +587,18 @@ function addDragHandlers() {
 }
 
 function showStatus(msg) {
-  document.title = `Golf – ${msg}`;
+  document.title = "Golf – " + msg;
+  const indicator = document.getElementById("turn-indicator");
+  if (indicator) {
+    indicator.textContent = msg;
+    // Animate with Anime.js: fade in + pop effect
+    anime({
+      targets: indicator,
+      scale: [0.7, 1.05, 1],
+      opacity: [0, 1],
+      duration: 600,
+      easing: "easeOutElastic(1, .7)"
+    });
+  }
 }
+
