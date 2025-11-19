@@ -453,9 +453,11 @@ function endTurn() {
   }
   nextPlayer();
   showStatus(
-    `${getPlayerName(state.currentPlayer)}'s turn: flip, draw/replace or draw/discard.`
+    `${getPlayerName(state.currentPlayer)}'s turn: flip, draw/replace or draw/discard.`,
+    true 
   );
 }
+
 
 
 function playerClearedAllRows(pn) {
@@ -586,19 +588,33 @@ function addDragHandlers() {
   }
 }
 
-function showStatus(msg) {
+function showStatus(msg, isTurnChange = false) {
   document.title = "Golf – " + msg;
   const indicator = document.getElementById("turn-indicator");
   if (indicator) {
     indicator.textContent = msg;
-    // Animate with Anime.js: fade in + pop effect
-    anime({
-      targets: indicator,
-      scale: [0.7, 1.05, 1],
-      opacity: [0, 1],
-      duration: 600,
-      easing: "easeOutElastic(1, .7)"
-    });
+
+    // Animate turn indicator whenever player's turn changes
+    if (isTurnChange) {
+      anime({
+        targets: indicator,
+        boxShadow: [
+          "0 0 30px 10px #ffd700",
+          "0 0 10px 2px #ffd700"
+        ],
+        scale: [1, 1.15, 1],
+        duration: 900,
+        easing: "easeOutElastic(1, .8)"
+      });
+    } else {
+      anime({
+        targets: indicator,
+        opacity: [0, 1],
+        scale: [0.7, 1],
+        duration: 600,
+        easing: "easeOutElastic(1, .7)"
+      });
+    }
   }
 }
 
