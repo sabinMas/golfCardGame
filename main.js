@@ -367,17 +367,23 @@ function canFlipDuringTurn(pn, slotIdx) {
  * the player's turn.
  */
 function flipDuringTurn(pn, slotIdx) {
-  if (!canFlipDuringTurn(pn, slotIdx)) return;
-  const card = state.hands[pn][slotIdx];
-  card.faceUp = true;
-  tryRowClear(pn, slotIdx);
-  endTurn();
-}
+   if (!canFlipDuringTurn(pn, slotIdx)) return;
+   const card = state.hands[pn][slotIdx];
+   card.faceUp = true;
++  // Re-render the player's hand so the flipped card shows immediately
++  renderHands();
+   tryRowClear(pn, slotIdx);
+   endTurn();
+ }
 
-
+/**
+ * Draw a card from either the stock or discard pile during a normal turn.
+ * Places the drawn card into the player's temporary hand, updates the UI,
+ * and prompts the player to replace a card or discard the one drawn.
+ */
 function draw(source) {
   if (state.phase !== "turns") return;
-  if (state.drawnCard) return; // already holding a card
+  if (state.drawnCard) return; 
   if (source === "stock") {
     if (state.deck.length === 0) reshuffleFromDiscardIntoDeck();
     state.drawnCard = state.deck.pop() || null;
@@ -390,7 +396,10 @@ function draw(source) {
   );
 }
 
-
+/**
+ * Rebuild the draw pile by reshuffling the discard pile when the stock is empty.
+ * Keeps the top discard card in place and shuffles the rest back into the deck.
+ */
 function reshuffleFromDiscardIntoDeck() {
   if (state.discard.length <= 1) return;
   const top = state.discard.pop();
@@ -398,7 +407,12 @@ function reshuffleFromDiscardIntoDeck() {
   state.discard = [top];
 }
 
-
+/**
+ * Replace one of the player's cards using the drawn card.
+ * Inserts the drawn card face-up into the chosen slot, moves the old card
+ * to the discard pile, updates the UI, checks the row for clearing,
+ * and ends the player's turn.
+ */
 function tryReplace(pn, slotIdx) {
   if (state.phase !== "turns") return;
   if (state.currentPlayer !== pn) return;
@@ -415,7 +429,11 @@ function tryReplace(pn, slotIdx) {
   endTurn();
 }
 
-
+/**
+ * Discard the currently drawn card instead of replacing a slot.
+ * Places the drawn card onto the discard pile, clears the held card,
+ * updates the UI, and ends the player's turn.
+ */
 function discardDrawn() {
   if (state.phase !== "turns") return;
   if (!state.drawnCard) return;
@@ -425,7 +443,11 @@ function discardDrawn() {
   endTurn();
 }
 
-
+/**
+ * Check whether both cards in the affected row are face-up and eligible to clear.
+ * If the two cards match in rank (or include a joker), both cards are marked
+ * as cleared and removed visually from the board.
+ */
 function tryRowClear(pn, slotIdxJustChanged) {
   const row = slotRow(slotIdxJustChanged);
   const a = row * 2;
@@ -444,7 +466,11 @@ function tryRowClear(pn, slotIdxJustChanged) {
   }
 }
 
-
+/**
+ * Finish the current player's turn. Checks for end-of-round conditions,
+ * switches to the next player if the game continues, and updates the
+ * status message to show whose turn is next.
+ */
 function endTurn() {
   const pn = state.currentPlayer;
   if (playerClearedAllRows(pn) || playerAllFaceUp(pn)) {
@@ -459,17 +485,26 @@ function endTurn() {
 }
 
 
-
+/**
+ * Determine whether the player has cleared all three rows.
+ * Returns true only if all six cards have been removed from play.
+ */
 function playerClearedAllRows(pn) {
   const h = state.hands[pn];
   return [0, 2, 4].every((rStart) => h[rStart]?.cleared && h[rStart + 1]?.cleared);
 }
-
+/**
+ * Check whether the player has revealed every card in their grid.
+ * Returns true when all cards are either face-up or already cleared.
+ */
 function playerAllFaceUp(pn) {
   return state.hands[pn].every((c) => c && (c.faceUp || c.cleared));
 }
 
-
+/**
+ * Calculate the player's current hand score by summing all non-cleared cards.
+ * Cleared cards contribute nothing; hidden cards still count their value.
+ */
 function handScore(pn) {
   return state.hands[pn].reduce((sum, c) => {
     if (!c || c.cleared) return sum;
@@ -477,6 +512,10 @@ function handScore(pn) {
   }, 0);
 }
 
+/**
+ * End the current round, compute both players’ scores, update the scoreboard,
+ * display the round results, and either start the next round or finish the game.
+ */
 
 function finishRound() {
   state.phase = "ended";
@@ -502,7 +541,10 @@ function finishRound() {
   }
 }
 
-
+/**
+ * Write an individual player's round score into the score table.
+ * Locates the correct input box based on player and round, then inserts the score.
+ */
 function writeRoundScore(playerNum, roundNum, amount) {
   const selector = `.score-input.${playerNum === 1 ? "p1" : "p2"}[data-round="${roundNum}"]`;
   const cell = document.querySelector(selector);
@@ -511,12 +553,19 @@ function writeRoundScore(playerNum, roundNum, amount) {
 
 /*
  * User interface handlers
+ * Tracks whether all UI event handlers have already been attached.
+ * Prevents multiple bindings when rounds restart or the board is re-rendered.
  */
+
 let handlersAttached = false;
 
+/**
+ * This attaches all click and drag event handlers for the game's interactive elements.
+ * Ensures handlers are only bound a single time, then routes user actions
+ * (flips, draws, replacements, discards) based on the current game phase.
+ */
 function attachUIHandlersOnce() {
   if (handlersAttached) return;
-  // Click on card slots: handle flips and replacements via click
   document.querySelectorAll(".card[data-player][data-slot]").forEach((el) => {
     el.addEventListener("click", () => {
       const pn   = Number(el.dataset.player);
@@ -535,7 +584,6 @@ function attachUIHandlersOnce() {
       }
     });
   });
-  // Click draw pile (stock)
   const drawPile = document.getElementById("draw-pile");
   if (drawPile) {
     drawPile.addEventListener("click", () => {
@@ -544,7 +592,6 @@ function attachUIHandlersOnce() {
       draw("stock");
     });
   }
-  // Click discard pile
   const discardPile = document.getElementById("discard-pile");
   if (discardPile) {
     discardPile.addEventListener("click", () => {
@@ -556,12 +603,15 @@ function attachUIHandlersOnce() {
       }
     });
   }
-  // Drag targets: card slots and discard pile
   addDragHandlers();
   handlersAttached = true;
 }
 
-
+/**
+ * This enables drag-and-drop behavior for replacing cards or discarding the drawn card.
+ * Card slots accept a drop to perform a replacement, while the discard pile
+ * accepts a drop to throw away the drawn card.
+ */
 function addDragHandlers() {
   // each card slot accepts a drop to replace
   document.querySelectorAll(".card[data-player][data-slot]").forEach((el) => {
@@ -588,6 +638,11 @@ function addDragHandlers() {
   }
 }
 
+/**
+ * This update the game's status message shown at the top of the UI.
+ * Optionally triggers a turn-change animation to highlight whose turn it is.
+ * Also updates the page title to reflect the current game state.
+ */
 function showStatus(msg, isTurnChange = false) {
   document.title = "Golf – " + msg;
   const indicator = document.getElementById("turn-indicator");

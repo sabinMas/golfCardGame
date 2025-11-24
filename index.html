@@ -3,11 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <title>Golf Card Game</title>
-    <!-- Link our stylesheet and script for the game.  The stylesheet contains
-         high‑contrast colors for accessibility and uses a custom card back graphic. -->
     <link rel="stylesheet" href="styles.css" />
+
+    <!-- Anime.js CDN hopefully for turn indicator animated features -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"
+    ></script>
     <script defer src="main.js"></script>
   </head>
+
   <body>
     <h1>Golf</h1>
 
@@ -31,7 +36,10 @@
         <p id="p2Display">Player&nbsp;2:</p>
       </div>
     </section>
-
+    <div
+      id="turn-indicator"
+      style="font-size: 2em; text-align: center; margin: 1em 0"
+    ></div>
     <!-- Top of table: draw and discard piles along with the drawn card area -->
     <section class="table-top" aria-label="Draw and Discard Piles">
       <div class="pile">
